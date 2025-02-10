@@ -7,8 +7,8 @@ const register = async (req: Request, res: Response): Promise<void> => {
 	const { email, password } = req.body;
 
 	try {
-		if (!password) throw new Error('La contraseña es requerida');
 		if (!email) throw new Error('El e-mail es requerido');
+		if (!password) throw new Error('La contraseña es requerida');
 
 		const hashedPassword = await hashPassword(password);
 
@@ -26,12 +26,12 @@ const register = async (req: Request, res: Response): Promise<void> => {
 
 		if (!email) {
 			res.status(400).json({
-				message: error,
+				message: 'El e-mail es requerido',
 			});
 		}
 		if (!password) {
 			res.status(400).json({
-				message: error,
+				message: 'La contraseña es requerida',
 			});
 		}
 	}
