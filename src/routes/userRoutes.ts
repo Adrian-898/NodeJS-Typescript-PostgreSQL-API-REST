@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import { createUser, deleteUser, getUserById, getUsers, updateUser } from '../controllers/userController';
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'default';
@@ -28,20 +29,10 @@ const authenticateToken = async (req: Request, res: Response, next: NextFunction
 	});
 };
 
-router.post('/', authenticateToken, () => {
-	return console.log('post');
-});
-router.get('/', authenticateToken, () => {
-	return console.log('getAll');
-});
-router.get('/:id', authenticateToken, () => {
-	return console.log('getById');
-});
-router.put('/:id', authenticateToken, () => {
-	return console.log('put');
-});
-router.delete('/:id', authenticateToken, () => {
-	return console.log('delete');
-});
+router.post('/', authenticateToken, createUser);
+router.get('/', authenticateToken, getUsers);
+router.get('/:id', authenticateToken, getUserById);
+router.put('/:id', authenticateToken, updateUser);
+router.delete('/:id', authenticateToken, deleteUser);
 
 export default router;

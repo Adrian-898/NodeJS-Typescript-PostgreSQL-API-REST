@@ -9,13 +9,14 @@ const register = async (req: Request, res: Response): Promise<void> => {
 	try {
 		if (!email) {
 			res.status(400).json({
-				message: 'El e-mail es requerido',
+				error: 'El e-mail es requerido',
 			});
 			return;
 		}
+
 		if (!password) {
 			res.status(400).json({
-				message: 'La contraseña es requerida',
+				error: 'La contraseña es requerida',
 			});
 			return;
 		}
@@ -35,8 +36,11 @@ const register = async (req: Request, res: Response): Promise<void> => {
 		console.log(error);
 
 		if (error.code === 'P2002' && error.meta.target.includes('email')) {
-			res.status(400).json({ message: 'Este e-mail ya está en uso' });
+			res.status(400).json({ error: 'Este e-mail ya está en uso' });
+			return;
 		}
+
+		res.status(500).json({ error: 'Ha ocurrido un error, por favor intente más tarde...' });
 	}
 };
 
@@ -46,13 +50,13 @@ const login = async (req: Request, res: Response): Promise<void> => {
 	try {
 		if (!email) {
 			res.status(400).json({
-				message: 'El e-mail es requerido',
+				error: 'El e-mail es requerido',
 			});
 			return;
 		}
 		if (!password) {
 			res.status(400).json({
-				message: 'La contraseña es requerida',
+				error: 'La contraseña es requerida',
 			});
 			return;
 		}
@@ -76,6 +80,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
 		}
 	} catch (error) {
 		console.log(error);
+		res.status(500).json({ error: 'Ocurrió un error, intente más tarde...' });
 	}
 };
 
