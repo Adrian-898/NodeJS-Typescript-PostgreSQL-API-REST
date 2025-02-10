@@ -34,8 +34,6 @@ const register = async (req: Request, res: Response): Promise<void> => {
 				message: error,
 			});
 		}
-
-		res.status(500).json({ error: 'Error en el registro' });
 	}
 };
 
