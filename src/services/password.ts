@@ -13,5 +13,3 @@ const comparePasswords = async (password: string, hash: string): Promise<boolean
 };
 
 export { hashPassword, comparePasswords };
-
-// Comparar con el hash de la base de datos

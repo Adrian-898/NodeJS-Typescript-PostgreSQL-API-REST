@@ -2,39 +2,6 @@ import { Request, Response } from 'express';
 import { hashPassword } from '../services/password';
 import prisma from '../models/user';
 
-// crear usuario [POST]
-const createUser = async (req: Request, res: Response): Promise<void> => {
-	const { email, password } = req.body;
-
-	if (!email || !password) {
-		res.status(400).json({
-			error: 'Debe llenar todos los campos',
-		});
-		return;
-	}
-
-	try {
-		const hashedPassword = await hashPassword(password);
-		const user = await prisma.user.create({
-			data: {
-				email,
-				password: hashedPassword,
-			},
-		});
-
-		res.status(201).json(user);
-	} catch (error: any) {
-		console.log(error);
-
-		if (error.code === 'P2002' && error.meta.target.includes('email')) {
-			res.status(400).json({ error: 'Este e-mail ya está en uso' });
-			return;
-		}
-
-		res.status(500).json({ error: 'Ha ocurrido un error, intente más tarde...' });
-	}
-};
-
 //get all [GET]
 const getUsers = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -47,7 +14,7 @@ const getUsers = async (req: Request, res: Response): Promise<void> => {
 
 // get unico [GET]
 const getUserById = async (req: Request, res: Response): Promise<void> => {
-	const userId = parseInt(req.params.id);
+	const userId = req.params.id;
 
 	try {
 		const user = await prisma.user.findUnique({
@@ -76,7 +43,7 @@ const updateUser = async (req: Request, res: Response): Promise<void> => {
 		return;
 	}
 
-	const userId = parseInt(req.params.id);
+	const userId = req.params.id;
 	let hashedPassword: string | null = null;
 
 	try {
@@ -117,7 +84,7 @@ const updateUser = async (req: Request, res: Response): Promise<void> => {
 
 // borrar un usuario [DELETE]
 const deleteUser = async (req: Request, res: Response): Promise<void> => {
-	const userId = parseInt(req.params.id);
+	const userId = req.params.id;
 
 	try {
 		const user = await prisma.user.findUnique({
@@ -143,4 +110,4 @@ const deleteUser = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
-export { createUser, getUsers, getUserById, updateUser, deleteUser };
+export { getUsers, getUserById, updateUser, deleteUser };
