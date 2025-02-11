@@ -4,22 +4,16 @@ import prisma from '../models/user';
 
 // crear usuario [POST]
 const createUser = async (req: Request, res: Response): Promise<void> => {
+	const { email, password } = req.body;
+
+	if (!email || !password) {
+		res.status(400).json({
+			error: 'Debe llenar todos los campos',
+		});
+		return;
+	}
+
 	try {
-		const { email, password } = req.body;
-
-		if (!email) {
-			res.status(400).json({
-				error: 'El e-mail es requerido',
-			});
-			return;
-		}
-		if (!password) {
-			res.status(400).json({
-				error: 'La contraseña es requerida',
-			});
-			return;
-		}
-
 		const hashedPassword = await hashPassword(password);
 		const user = await prisma.user.create({
 			data: {
@@ -73,8 +67,16 @@ const getUserById = async (req: Request, res: Response): Promise<void> => {
 
 // actualizar un usuario [PUT]
 const updateUser = async (req: Request, res: Response): Promise<void> => {
-	const userId = parseInt(req.params.id);
 	const { email, password } = req.body;
+
+	if (!email && !password) {
+		res.status(400).json({
+			error: 'Debe proporcionar al menos un campo para cambiar',
+		});
+		return;
+	}
+
+	const userId = parseInt(req.params.id);
 	let hashedPassword: string | null = null;
 
 	try {
@@ -91,17 +93,19 @@ const updateUser = async (req: Request, res: Response): Promise<void> => {
 			hashedPassword = await hashPassword(password);
 		}
 
+		let data = {
+			email: email || user.email,
+			password: hashedPassword || user.password,
+		};
+
 		await prisma.user.update({
 			where: {
 				id: userId,
 			},
-			data: {
-				email: email || user.email,
-				password: hashedPassword || user.password,
-			},
+			data,
 		});
 
-		res.status(200).json(user);
+		res.status(200).json({ message: 'Usuario actualizado exitosamente' });
 	} catch (error: any) {
 		if (error.code === 'P2002' && error.meta.target.includes(['email'])) {
 			res.status(400).json({ error: 'El email ingresado ya existe' });
