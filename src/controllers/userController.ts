@@ -98,14 +98,14 @@ const updateUser = async (req: Request, res: Response): Promise<void> => {
 			password: hashedPassword || user.password,
 		};
 
-		await prisma.user.update({
+		const newUser = await prisma.user.update({
 			where: {
 				id: userId,
 			},
 			data,
 		});
 
-		res.status(200).json({ message: 'Usuario actualizado exitosamente' });
+		res.status(200).json(newUser);
 	} catch (error: any) {
 		if (error.code === 'P2002' && error.meta.target.includes(['email'])) {
 			res.status(400).json({ error: 'El email ingresado ya existe' });
