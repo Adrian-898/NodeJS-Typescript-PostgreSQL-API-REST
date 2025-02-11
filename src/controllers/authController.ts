@@ -17,14 +17,14 @@ const register = async (req: Request, res: Response): Promise<void> => {
 	}
 
 	try {
-		// El email ya existe
+		// validacion El email ya existe
 		let exists = await prisma.user.findUnique({
 			where: {
 				email,
 			},
 		});
 
-		// El email ya existe
+		// validacion El email ya existe
 		if (exists) {
 			res.status(400).json({ error: 'Este e-mail ya está en uso' });
 			return;
@@ -32,9 +32,6 @@ const register = async (req: Request, res: Response): Promise<void> => {
 
 		// encriptando contraseña
 		const hashedPassword = await hashPassword(password);
-
-		// Generando ID
-		// const id: string = crypto.randomUUID();
 
 		// creando usuario con los datos validados
 		const user = await prisma.user.create({
@@ -44,11 +41,13 @@ const register = async (req: Request, res: Response): Promise<void> => {
 			},
 		});
 
-		// genera token
+		// genera token (inicia sesion)
 		const token = generateToken(user);
+		//log de prueba para poder acceder al token sin un frontend
+		console.log(token);
 
-		// response
-		res.status(201).json({ 'Token: ': token, 'Email: ': email });
+		// response de la peticion
+		res.status(201).json({ message: 'Registro exitoso' });
 	} catch (error: any) {
 		console.log(error);
 
@@ -68,21 +67,16 @@ const login = async (req: Request, res: Response): Promise<void> => {
 	const { email, password } = req.body;
 
 	// Validaciones
-	if (!email) {
+	// Validaciones
+	if (!email || !password) {
 		res.status(400).json({
-			error: 'El e-mail es requerido',
-		});
-		return;
-	}
-	if (!password) {
-		res.status(400).json({
-			error: 'La contraseña es requerida',
+			error: 'Debe llenar todos los campos',
 		});
 		return;
 	}
 
 	try {
-		// comprobando si existe el usuario
+		// validando si existe el usuario
 		const user = await prisma.user.findUnique({ where: { email } });
 
 		// si no existe el usuario
@@ -100,11 +94,14 @@ const login = async (req: Request, res: Response): Promise<void> => {
 				error: 'El usuario o la contraseña son incorrectos',
 			});
 			return;
-		} else {
-			// si coincide se genera un token y se responde a la peticion
-			const token = generateToken(user);
-			res.status(200).json({ token });
 		}
+
+		// si coincide se genera un token y se responde a la peticion
+		const token = generateToken(user);
+		//log de prueba para poder acceder al token sin un frontend
+		console.log(token);
+
+		res.status(201).json({ message: 'Inicio de sesión exitoso' });
 	} catch (error) {
 		console.log(error);
 

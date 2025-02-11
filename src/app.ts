@@ -9,8 +9,15 @@ import userRoutes from './routes/userRoutes';
 
 const app = express();
 
+//setting .ejs view
+// app.set('view engine', 'ejs');
+
 // middleware para tratar el contenido de las peticiones en formato json
 app.use(express.json());
+
+/* app.get('/', (req, res) => {
+	res.render('example', { name: 'Adrian' });
+}); */
 
 // Authentication route
 app.use('/auth', authRoutes);
