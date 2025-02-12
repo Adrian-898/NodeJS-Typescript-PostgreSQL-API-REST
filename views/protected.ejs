@@ -1,8 +1,156 @@
-<html>
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Vista Protegida</title>
+		<style>
+			/* Protected View Styles */
+
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+				font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			}
+
+			body {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				min-height: 100vh;
+				background: #f0f2f5;
+			}
+
+			.container {
+				background: white;
+				padding: 2rem;
+				border-radius: 20px;
+				box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+				width: 600px;
+			}
+
+			h2 {
+				margin-bottom: 1.5rem;
+				color: #1a1a1a;
+			}
+
+			.navbar {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 2rem;
+				padding-bottom: 1rem;
+				border-bottom: 1px solid #eee;
+			}
+
+			.logout-btn {
+				background: #ff4444;
+				color: white;
+				border: none;
+				padding: 0.8rem 1.5rem;
+				border-radius: 8px;
+				cursor: pointer;
+				transition: background 0.3s ease;
+			}
+
+			.logout-btn:hover {
+				background: #cc0000;
+			}
+
+			.protected-content {
+				text-align: center;
+				padding: 2rem;
+				background: #fff;
+				border-radius: 15px;
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+			}
+
+			.welcome-title {
+				color: #1a1a1a;
+				margin-bottom: 1.5rem;
+				font-size: 2.2rem;
+			}
+
+			.user-email {
+				color: #2d88ff;
+				text-decoration: underline;
+			}
+
+			.user-info {
+				background: #f8f9fa;
+				padding: 2rem;
+				border-radius: 12px;
+				margin-top: 2rem;
+			}
+
+			.protected-title {
+				color: #333;
+				margin-bottom: 1rem;
+				font-size: 1.5rem;
+			}
+
+			.divider {
+				border: 0;
+				height: 1px;
+				background: #ddd;
+				margin: 1.5rem auto;
+				width: 60%;
+			}
+
+			.user-detail {
+				font-size: 1.1rem;
+				color: #555;
+				margin: 1rem 0;
+			}
+
+			.user-id {
+				font-weight: bold;
+				color: #2d88ff;
+			}
+
+			.app-description {
+				color: #666;
+				margin-top: 2rem;
+				line-height: 1.6;
+			}
+
+			/* Responsive Design */
+			@media (max-width: 768px) {
+				.container {
+					width: 90%;
+					padding: 1rem;
+				}
+
+				.welcome-title {
+					font-size: 1.8rem;
+				}
+
+				.protected-title {
+					font-size: 1.3rem;
+				}
+			}
+		</style>
+	</head>
 	<body>
-		<h1>Hola <%= data.email %>!</h1>
-		<h2>Esta vista está protegida por JWT</h2>
-		<hr />
-		<p>Esta es una app de prueba, tu ID es: <%= data.id %></p>
+		<div class="container">
+			<nav class="navbar">
+				<h2>Mi App Segura</h2>
+				<button onclick="window.location.href='/logout'" class="logout-btn">Cerrar Sesión</button>
+			</nav>
+
+			<div class="protected-content">
+				<h1 class="welcome-title">¡Bienvenido <span class="user-email"><%= data.email %></span>!</h1>
+				<div class="user-info">
+					<h2 class="protected-title">Esta vista está protegida</h2>
+					<hr class="divider" />
+					<p class="user-detail">Tu ID de usuario es: <span class="user-id"><%= data.id %> (UUID)</span></p>
+					<p class="app-description">
+						Esta es una aplicación de prueba para demostrar un flujo de autenticación segura usando Json web
+						tokens.
+					</p>
+				</div>
+			</div>
+		</div>
 	</body>
 </html>

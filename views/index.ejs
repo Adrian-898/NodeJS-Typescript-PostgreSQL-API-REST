@@ -151,7 +151,7 @@
 				<form id="register" class="form">
 					<h2>Crea tu cuenta</h2>
 					<div class="input-group">
-						<input type="email" required />
+						<input type="text" required />
 						<label>Email</label>
 					</div>
 					<div class="input-group">
@@ -168,6 +168,7 @@
 		</div>
 
 		<script>
+			// tab switch
 			document.querySelectorAll('.tab-btn').forEach((btn) => {
 				btn.addEventListener('click', () => {
 					const target = btn.dataset.target;
@@ -176,6 +177,44 @@
 					});
 					btn.classList.add('active');
 					document.getElementById(target).classList.add('active');
+				});
+
+				// Login form handler
+				document.getElementById('login').addEventListener('submit', (e) => {
+					e.preventDefault();
+
+					const email = e.target.querySelector('input[type="text"]').value;
+					const password = e.target.querySelector('input[type="password"]').value;
+
+					console.log('Login Form Data:', { email, password });
+
+					fetch('/auth/login', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({ email, password }),
+					}).then((res) => {
+						if (res.ok) {
+							setTimeout(() => {
+								window.location.href = '/protected';
+							}, 2000);
+						} else {
+							alert('Error al iniciar sesión, intente de nuevo...');
+						}
+					});
+				});
+
+				// Register form handler
+				document.getElementById('register').addEventListener('submit', (e) => {
+					e.preventDefault();
+
+					const email = e.target.querySelector('input[type="text"]').value;
+					const password = e.target.querySelectorAll('input[type="password"]')[0].value;
+					const confirmPassword = e.target.querySelectorAll('input[type="password"]')[1].value;
+
+					console.log('Registration Form Data:', formData);
+					// Add your registration logic here
 				});
 			});
 		</script>
