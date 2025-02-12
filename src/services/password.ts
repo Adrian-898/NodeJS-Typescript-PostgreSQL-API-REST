@@ -1,10 +1,15 @@
 import bcrypt from 'bcrypt';
 
-const SALT_ROUNDS: number = 10;
+const SALT_ROUNDS: string | undefined = process.env.SALT_ROUNDS;
 
 // Crear contraseña hasheada
-const hashPassword = async (password: string): Promise<string> => {
-	return await bcrypt.hash(password, SALT_ROUNDS);
+const hashPassword = async (password: string): Promise<string | void> => {
+	try {
+		if (!SALT_ROUNDS) throw new Error('No SALT defined to encrypt password...');
+		return await bcrypt.hash(password, SALT_ROUNDS);
+	} catch (error) {
+		console.error(error);
+	}
 };
 
 // Comparar contraseñas para iniciar sesion

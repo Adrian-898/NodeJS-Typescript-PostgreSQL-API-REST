@@ -1,4 +1,3 @@
-import crypto from 'node:crypto';
 import { Request, Response } from 'express';
 import { hashPassword, comparePasswords } from '../services/password';
 import { generateToken } from '../services/auth';
@@ -33,6 +32,12 @@ const register = async (req: Request, res: Response): Promise<void> => {
 		// encriptando contraseña
 		const hashedPassword = await hashPassword(password);
 
+		// Error al encriptar
+		if (!hashedPassword) {
+			res.status(500).json({ error: 'Ha ocurrido un error creando tu cuenta, por favor intenta más tarde...' });
+			return;
+		}
+
 		// creando usuario con los datos validados
 		const user = await prisma.user.create({
 			data: {
@@ -47,7 +52,7 @@ const register = async (req: Request, res: Response): Promise<void> => {
 		console.log(token);
 
 		// response de la peticion
-		res.status(201).json({ message: 'Registro exitoso' });
+		res.status(201).json({ message: 'Registro exitoso', token });
 	} catch (error: any) {
 		console.log(error);
 
@@ -101,7 +106,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
 		//log de prueba para poder acceder al token sin un frontend
 		console.log(token);
 
-		res.status(201).json({ message: 'Inicio de sesión exitoso' });
+		res.status(201).json({ message: 'Inicio de sesión exitoso', token });
 	} catch (error) {
 		console.log(error);
 
