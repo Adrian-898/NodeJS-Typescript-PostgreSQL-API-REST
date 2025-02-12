@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
 
@@ -15,6 +16,9 @@ app.set('view engine', 'ejs');
 
 // middleware para tratar el contenido de las peticiones en formato json
 app.use(express.json());
+
+// parser para las cookies (jwt)
+app.use(cookieParser());
 
 /*
 // renderizado opcional de un front para interactuar con el servidor usando un archivo .ejs

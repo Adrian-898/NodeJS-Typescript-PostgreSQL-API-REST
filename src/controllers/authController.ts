@@ -106,7 +106,13 @@ const login = async (req: Request, res: Response): Promise<void> => {
 		//log de prueba para poder acceder al token sin un frontend
 		console.log(token);
 
-		res.status(201).json({ message: 'Inicio de sesión exitoso', token });
+		res.status(201)
+			.cookie('access_token', token, {
+				httpOnly: true, // solo accesible por el servidor
+				sameSite: 'strict', // solo accesible desde el mismo dominio
+				secure: process.env.NODE_ENV === 'production', // solo usada a traves de https en produccion
+			})
+			.json({ message: 'Inicio de sesión exitoso' });
 	} catch (error) {
 		console.log(error);
 
