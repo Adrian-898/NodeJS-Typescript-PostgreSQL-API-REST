@@ -93,9 +93,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
 		}
 
 		// si coincide se genera un token y se responde a la peticion
-		const token = generateToken(user);
-		//log de prueba para poder acceder al token sin un frontend
-		console.log(token);
+		const token = await generateToken(user);
 
 		res.status(201)
 			.cookie('access_token', token, {
@@ -108,7 +106,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
 		console.log(error);
 
 		// error desconocido
-		res.status(500).json({ error: 'Ocurrió un error, intente más tarde...' });
+		res.status(500).json({ error: 'Ha ocurrido un error, por favor intente más tarde...' });
 	}
 };
 

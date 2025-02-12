@@ -53,7 +53,7 @@ const updateUser = async (req: Request, res: Response): Promise<void> => {
 	}
 
 	const userId = req.params.id;
-	let hashedPassword: string | void = undefined;
+	let hashedPassword: string | undefined = undefined;
 
 	try {
 		// Validando que el usuario existe
@@ -70,12 +70,6 @@ const updateUser = async (req: Request, res: Response): Promise<void> => {
 		// encriptando nueva contraseña
 		if (password) {
 			hashedPassword = await hashPassword(password);
-		}
-
-		// Error al encriptar nueva contraseña
-		if (!hashedPassword) {
-			res.status(500).json({ error: 'Ha ocurrido un error creando tu cuenta, por favor intenta más tarde...' });
-			return;
 		}
 
 		// se declaran los datos a editar
