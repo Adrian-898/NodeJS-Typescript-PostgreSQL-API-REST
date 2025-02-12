@@ -42,11 +42,9 @@ const register = async (req: Request, res: Response): Promise<void> => {
 
 		// genera token (inicia sesion)
 		const token = generateToken(user);
-		//log de prueba para poder acceder al token sin un frontend
-		console.log(token);
 
 		// response de la peticion
-		res.status(201).json({ message: 'Registro exitoso', token });
+		res.status(201).json({ message: 'Registro exitoso' });
 	} catch (error: any) {
 		console.error(error);
 
@@ -65,7 +63,6 @@ const register = async (req: Request, res: Response): Promise<void> => {
 const login = async (req: Request, res: Response): Promise<void> => {
 	const { email, password } = req.body;
 
-	// Validaciones
 	// Validaciones
 	if (!email || !password) {
 		res.status(400).json({
