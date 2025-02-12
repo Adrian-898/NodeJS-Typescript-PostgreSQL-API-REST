@@ -92,10 +92,12 @@ const login = async (req: Request, res: Response): Promise<void> => {
 			return;
 		}
 
-		// si coincide se genera un token y se responde a la peticion
+		// si coincide se genera un token
 		const token = await generateToken(user);
 
+		// Se responde a la peticion
 		res.status(201)
+			// se envia en una session cookie el token (sin tiempo de expiracion, el tiempo se maneja con el token)
 			.cookie('access_token', token, {
 				httpOnly: true, // solo accesible por el servidor
 				sameSite: 'strict', // solo accesible desde el mismo dominio
