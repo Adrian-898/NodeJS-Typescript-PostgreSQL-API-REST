@@ -32,12 +32,6 @@ const register = async (req: Request, res: Response): Promise<void> => {
 		// encriptando contraseña
 		const hashedPassword = await hashPassword(password);
 
-		// Error al encriptar
-		if (!hashedPassword) {
-			res.status(500).json({ error: 'Ha ocurrido un error creando tu cuenta, por favor intenta más tarde...' });
-			return;
-		}
-
 		// creando usuario con los datos validados
 		const user = await prisma.user.create({
 			data: {
@@ -54,7 +48,7 @@ const register = async (req: Request, res: Response): Promise<void> => {
 		// response de la peticion
 		res.status(201).json({ message: 'Registro exitoso', token });
 	} catch (error: any) {
-		console.log(error);
+		console.error(error);
 
 		// el email debe ser unico
 		if (error.code === 'P2002' && error.meta.target.includes('email')) {
