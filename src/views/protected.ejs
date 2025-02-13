@@ -140,11 +140,11 @@
 			</nav>
 
 			<div class="protected-content">
-				<h1 class="welcome-title">¡Bienvenido <span class="user-email"><%= data.email %></span>!</h1>
+				<h1 class="welcome-title">¡Bienvenido <span class="user-email"><%= user.email %></span>!</h1>
 				<div class="user-info">
 					<h2 class="protected-title">Esta vista está protegida</h2>
 					<hr class="divider" />
-					<p class="user-detail">Tu ID de usuario es: <span class="user-id"><%= data.id %> (UUID)</span></p>
+					<p class="user-detail">Tu ID de usuario es: <span class="user-id"><%= user.id %> (UUID)</span></p>
 					<p class="app-description">
 						Esta es una aplicación de prueba para demostrar un flujo de autenticación segura usando Json web
 						tokens.
