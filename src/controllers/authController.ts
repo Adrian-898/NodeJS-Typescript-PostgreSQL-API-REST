@@ -43,8 +43,15 @@ const register = async (req: Request, res: Response): Promise<void> => {
 		// genera token (inicia sesion)
 		const token = generateToken(user);
 
-		// response de la peticion
-		res.status(201).json({ message: 'Registro exitoso' });
+		// Se responde a la peticion
+		res.status(201)
+			// se envia en una session cookie el token (sin tiempo de expiracion, el tiempo se maneja con el token)
+			.cookie('access_token', token, {
+				httpOnly: true, // solo accesible por el servidor
+				sameSite: 'strict', // solo accesible desde el mismo dominio
+				secure: process.env.NODE_ENV === 'production', // solo usada a traves de https en produccion
+			})
+			.json({ message: 'Registro exitoso' });
 	} catch (error: any) {
 		console.error(error);
 

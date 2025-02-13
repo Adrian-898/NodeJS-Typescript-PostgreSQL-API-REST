@@ -213,8 +213,23 @@
 					const password = e.target.querySelectorAll('input[type="password"]')[0].value;
 					const confirmPassword = e.target.querySelectorAll('input[type="password"]')[1].value;
 
-					console.log('Registration Form Data:', formData);
-					// Add your registration logic here
+					console.log('Registration Form Data:', { email, password, confirmPassword });
+
+					fetch('/auth/register', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({ email, password, confirmPassword }),
+					}).then((res) => {
+						if (res.ok) {
+							setTimeout(() => {
+								window.location.href = '/protected';
+							}, 2000);
+						} else {
+							alert('Error al crear cuenta, intente de nuevo...');
+						}
+					});
 				});
 			});
 		</script>
