@@ -137,11 +137,11 @@
 				<form id="login" class="form active">
 					<h2>Bienvenido!</h2>
 					<div class="input-group">
-						<input type="text" required />
+						<input type="text" name="email" required />
 						<label>Email</label>
 					</div>
 					<div class="input-group">
-						<input type="password" required />
+						<input type="password" name="password" required />
 						<label>Contraseña</label>
 					</div>
 					<button type="submit" class="submit-btn">Iniciar sesión</button>
@@ -151,15 +151,15 @@
 				<form id="register" class="form">
 					<h2>Crea tu cuenta</h2>
 					<div class="input-group">
-						<input type="text" required />
+						<input type="text" name="email" required />
 						<label>Email</label>
 					</div>
 					<div class="input-group">
-						<input type="password" required />
+						<input type="password" name="password" required />
 						<label>Contraseña</label>
 					</div>
 					<div class="input-group">
-						<input type="password" required />
+						<input type="password" name="password2" required />
 						<label>Confirmar contraseña</label>
 					</div>
 					<button type="submit" class="submit-btn">Crear cuenta</button>
@@ -168,7 +168,7 @@
 		</div>
 
 		<script>
-			// tab switch
+			// Tab switch code
 			document.querySelectorAll('.tab-btn').forEach((btn) => {
 				btn.addEventListener('click', () => {
 					const target = btn.dataset.target;
@@ -178,59 +178,66 @@
 					btn.classList.add('active');
 					document.getElementById(target).classList.add('active');
 				});
+			});
 
-				// Login form handler
-				document.getElementById('login').addEventListener('submit', (e) => {
-					e.preventDefault();
+			// Login form handler (moved outside tab button loop)
+			document.getElementById('login').addEventListener('submit', (e) => {
+				e.preventDefault();
+				const btn = e.target.querySelector('button[type="submit"]');
+				btn.disabled = true;
 
-					const email = e.target.querySelector('input[type="text"]').value;
-					const password = e.target.querySelector('input[type="password"]').value;
+				const email = e.target.querySelector('input[type="text"]').value;
+				const password = e.target.querySelector('input[type="password"]').value;
 
-					console.log('Login Form Data:', { email, password });
+				fetch('/auth/login', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ email, password }),
+				})
+					.then(async (res) => {
+						const data = await res.json();
 
-					fetch('/auth/login', {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-						},
-						body: JSON.stringify({ email, password }),
-					}).then((res) => {
 						if (res.ok) {
 							setTimeout(() => {
 								window.location.href = '/protected';
-							}, 2000);
+							}, 1000);
 						} else {
-							alert('Error al iniciar sesión, intente de nuevo...');
+							alert(data.error || 'Error en inicio de sesión');
 						}
-					});
-				});
+					})
+					.catch(() => alert('Network error'))
+					.finally(() => (btn.disabled = false));
+			});
 
-				// Register form handler
-				document.getElementById('register').addEventListener('submit', (e) => {
-					e.preventDefault();
+			// Register form handler (moved outside tab button loop)
+			document.getElementById('register').addEventListener('submit', (e) => {
+				e.preventDefault();
 
-					const email = e.target.querySelector('input[type="text"]').value;
-					const password = e.target.querySelectorAll('input[type="password"]')[0].value;
-					const confirmPassword = e.target.querySelectorAll('input[type="password"]')[1].value;
+				const btn = e.target.querySelector('button[type="submit"]');
+				btn.disabled = true;
 
-					console.log('Registration Form Data:', { email, password, confirmPassword });
+				const email = e.target.querySelector('input[type="text"]').value;
+				const password = e.target.querySelectorAll('input[type="password"]')[0].value;
+				const password2 = e.target.querySelectorAll('input[type="password"]')[1].value;
 
-					fetch('/auth/register', {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-						},
-						body: JSON.stringify({ email, password, confirmPassword }),
-					}).then((res) => {
+				fetch('/auth/register', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ email, password, password2 }),
+				})
+					.then(async (res) => {
+						const data = await res.json();
+
 						if (res.ok) {
 							setTimeout(() => {
 								window.location.href = '/protected';
-							}, 2000);
+							}, 1000);
 						} else {
-							alert('Error al crear cuenta, intente de nuevo...');
+							alert(data.error || 'Error en registro');
 						}
-					});
-				});
+					})
+					.catch(() => alert('Network error'))
+					.finally(() => (btn.disabled = false));
 			});
 		</script>
 	</body>

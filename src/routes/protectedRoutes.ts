@@ -17,8 +17,7 @@ router.get('/', (req, res) => {
 		res.render('../src/views/protected', { user });
 	} catch (error) {
 		console.error(error);
-		res.status(500).json({ error: 'Ha ocurrido un error, intente de nuevo...' });
-		alert('Error, intente de nuevo...');
+		res.status(500).send('<h1>No tienes permisos para acceder a este recurso...<h1>');
 	}
 });
 router.get('/logout', logout);

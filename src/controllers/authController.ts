@@ -5,30 +5,25 @@ import prisma from '../models/user';
 
 // crear usuario [POST]
 const register = async (req: Request, res: Response): Promise<void> => {
-	const { email, password } = req.body;
+	const { email, password, password2 } = req.body;
 
 	// Validaciones
-	if (!email || !password) {
+	if (!email || !password || !password2) {
 		res.status(400).json({
 			error: 'Debe llenar todos los campos',
 		});
 		return;
 	}
 
-	try {
-		// validacion El email ya existe
-		let exists = await prisma.user.findUnique({
-			where: {
-				email,
-			},
+	// validaciones
+	if (password !== password2) {
+		res.status(400).json({
+			error: 'Las contraseñas deben coincidir',
 		});
+		return;
+	}
 
-		// validacion El email ya existe
-		if (exists) {
-			res.status(400).json({ error: 'Este e-mail ya está en uso' });
-			return;
-		}
-
+	try {
 		// encriptando contraseña
 		const hashedPassword = await hashPassword(password);
 
@@ -40,8 +35,12 @@ const register = async (req: Request, res: Response): Promise<void> => {
 			},
 		});
 
+		console.log('usuario antes de generar token de registro: ', user.id, user.email);
+
 		// genera token (inicia sesion)
-		const token = generateToken(user);
+		const token = await generateToken(user);
+
+		console.log('Registro exitoso: ', token);
 
 		// Se responde a la peticion
 		res.status(201)
@@ -58,6 +57,7 @@ const register = async (req: Request, res: Response): Promise<void> => {
 		// el email debe ser unico
 		if (error.code === 'P2002' && error.meta.target.includes('email')) {
 			res.status(400).json({ error: 'Este e-mail ya está en uso' });
+			console.log('error: este email ya existe: ', error);
 			return;
 		}
 
