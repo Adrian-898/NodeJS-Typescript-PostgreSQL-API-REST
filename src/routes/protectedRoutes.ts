@@ -17,6 +17,7 @@ router.get('/', (req, res) => {
 		res.render('../src/views/protected', { user });
 	} catch (error) {
 		console.error(error);
+		res.status(500).json({ error: 'Ha ocurrido un error, intente de nuevo...' });
 		alert('Error, intente de nuevo...');
 	}
 });
