@@ -22,7 +22,7 @@ app.use(cookieParser());
 
 // renderizado opcional de un front para interactuar con el servidor usando un archivo .ejs
 app.get('/', (req: Request, res: Response) => {
-	res.render('../src/views/index');
+	res.render('index');
 });
 
 // renderizado opcional de un front para interactuar con el servidor usando un archivo .ejs (carpeta views)

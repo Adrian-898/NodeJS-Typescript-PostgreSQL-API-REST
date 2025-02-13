@@ -14,7 +14,7 @@ router.get('/', (req, res) => {
 
 		const user = jwt.verify(token, JWT_SECRET);
 
-		res.render('../src/views/protected', { user });
+		res.render('protected', { user });
 	} catch (error) {
 		console.error(error);
 		res.status(500).send('<h1>No tienes permisos para acceder a este recurso...<h1>');
