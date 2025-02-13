@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { hashPassword, comparePasswords } from '../services/password';
-import { generateToken } from '../services/auth';
+import { generateToken, generateRefreshToken } from '../services/auth';
 import prisma from '../models/user';
 
 // crear usuario [POST]
@@ -39,13 +39,21 @@ const register = async (req: Request, res: Response): Promise<void> => {
 
 		// genera token (inicia sesion)
 		const token = await generateToken(user);
+		const refreshToken = await generateRefreshToken(user);
 
 		console.log('Registro exitoso: ', token);
 
 		// Se responde a la peticion
 		res.status(201)
-			// se envia en una session cookie el token (sin tiempo de expiracion, el tiempo se maneja con el token)
+			// se envia en una cookie el token
 			.cookie('access_token', token, {
+				httpOnly: true, // solo accesible por el servidor
+				sameSite: 'strict', // solo accesible desde el mismo dominio
+				secure: process.env.NODE_ENV === 'production', // solo usada a traves de https en produccion
+				maxAge: 1000 * 60 * 60, // 1 hora
+			})
+			// se envia en una cookie el token de refresco (sin tiempo de expiracion en la cookie, el tiempo se maneja con el token, dura mas)
+			.cookie('refresh_token', refreshToken, {
 				httpOnly: true, // solo accesible por el servidor
 				sameSite: 'strict', // solo accesible desde el mismo dominio
 				secure: process.env.NODE_ENV === 'production', // solo usada a traves de https en produccion
@@ -104,8 +112,15 @@ const login = async (req: Request, res: Response): Promise<void> => {
 
 		// Se responde a la peticion
 		res.status(201)
-			// se envia en una session cookie el token (sin tiempo de expiracion, el tiempo se maneja con el token)
+			// se envia en una cookie el token
 			.cookie('access_token', token, {
+				httpOnly: true, // solo accesible por el servidor
+				sameSite: 'strict', // solo accesible desde el mismo dominio
+				secure: process.env.NODE_ENV === 'production', // solo usada a traves de https en produccion
+				maxAge: 1000 * 60 * 60, // 1 hora
+			})
+			// se envia en una cookie el token de refresco (sin tiempo de expiracion en la cookie, el tiempo se maneja con el token, dura mas)
+			.cookie('refresh_token', token, {
 				httpOnly: true, // solo accesible por el servidor
 				sameSite: 'strict', // solo accesible desde el mismo dominio
 				secure: process.env.NODE_ENV === 'production', // solo usada a traves de https en produccion
