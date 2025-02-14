@@ -37,7 +37,7 @@ const register = async (req: Request, res: Response): Promise<void> => {
 
 		console.log('usuario antes de generar token de registro: ', user.id, user.email);
 
-		// genera token (inicia sesion)
+		// genera tokens (inicia sesion)
 		const token = await generateToken(user);
 		const refreshToken = await generateRefreshToken(user);
 
@@ -107,20 +107,20 @@ const login = async (req: Request, res: Response): Promise<void> => {
 			return;
 		}
 
-		// si coincide se genera un token
+		// genera tokens (inicia sesion)
 		const token = await generateToken(user);
+		const refreshToken = await generateRefreshToken(user);
 
 		// Se responde a la peticion
 		res.status(201)
-			// se envia en una cookie el token
+			// se envia en una cookie el token de acceso (el tiempo de expiracion se asigna al token, NO a la cookie)
 			.cookie('access_token', token, {
 				httpOnly: true, // solo accesible por el servidor
 				sameSite: 'strict', // solo accesible desde el mismo dominio
 				secure: process.env.NODE_ENV === 'production', // solo usada a traves de https en produccion
-				maxAge: 1000 * 60 * 60, // 1 hora
 			})
 			// se envia en una cookie el token de refresco (sin tiempo de expiracion en la cookie, el tiempo se maneja con el token, dura mas)
-			.cookie('refresh_token', token, {
+			.cookie('refresh_token', refreshToken, {
 				httpOnly: true, // solo accesible por el servidor
 				sameSite: 'strict', // solo accesible desde el mismo dominio
 				secure: process.env.NODE_ENV === 'production', // solo usada a traves de https en produccion

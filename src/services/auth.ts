@@ -9,7 +9,7 @@ const generateToken = async (user: User): Promise<string> => {
 
 		const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
 			algorithm: 'HS256',
-			expiresIn: '1h',
+			expiresIn: 1000,
 		});
 
 		console.log('just signed token: ', token);
