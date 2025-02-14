@@ -7,12 +7,14 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 const authenticateToken = async (req: Request, res: Response, next: NextFunction) => {
 	if (!JWT_SECRET) {
-		return res.status(500).json({ error: 'Server error: JWT secret missing' });
+		res.status(500).json({ error: 'Server error: JWT secret missing' });
+		return;
 	}
 
 	const accessToken = req.cookies.access_token;
 	if (!accessToken) {
-		return res.status(401).json({ error: 'Authorization required' });
+		res.status(401).json({ error: 'Authorization required' });
+		return;
 	}
 
 	try {
@@ -25,7 +27,8 @@ const authenticateToken = async (req: Request, res: Response, next: NextFunction
 			// Refresca el token expirado
 			const refreshToken = req.cookies.refresh_token;
 			if (!refreshToken) {
-				return res.status(403).json({ error: 'Session expired, please log in again' });
+				res.status(403).json({ error: 'Session expired, please log in again' });
+				return;
 			}
 
 			try {
@@ -50,12 +53,14 @@ const authenticateToken = async (req: Request, res: Response, next: NextFunction
 				next();
 			} catch (refreshError) {
 				console.error('Refresh token error: ', refreshError);
-				return res.status(403).json({ error: 'La sesión expiró, por favor vuelve a iniciar sesión...' });
+				res.status(403).json({ error: 'La sesión expiró, por favor vuelve a iniciar sesión...' });
+				return;
 			}
 		} else {
 			// Otros errores
 			console.error('Error de autenticación: ', error);
-			return res.status(403).json({ error: 'Acceso denegado' });
+			res.status(403).json({ error: 'Acceso denegado' });
+			return;
 		}
 	}
 };
