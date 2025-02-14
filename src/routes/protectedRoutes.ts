@@ -11,18 +11,20 @@ router.get('/', authenticateToken, (req, res) => {
 	const token = req.cookies.access_token;
 	try {
 		if (!JWT_SECRET) {
-			res.status(403).send('<h1>No tienes permisos para acceder a este recurso...<h1>');
+			res.status(403).send('<h1>No tienes permisos para acceder a este recurso (sin secreto)...<h1>');
 			return;
 		}
 		if (!token) {
-			res.status(403).send('<h1>No tienes permisos para acceder a este recurso...<h1>');
+			res.status(403).send('<h1>No tienes permisos para acceder a este recurso (sin token)...<h1>');
 			return;
 		}
 
 		// Verificar token
 		jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] }, (error, user) => {
 			if (error) {
-				res.status(403).send('<h1>No tienes permisos para acceder a este recurso...<h1>');
+				res.status(403).send(
+					'<h1>No tienes permisos para acceder a este recurso (fallo en verificacion)...<h1>'
+				);
 				return;
 			} else {
 				console.log('token de acceso verificado en /protected');

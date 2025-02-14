@@ -44,24 +44,23 @@ const authenticateToken = async (req: Request, res: Response, next: NextFunction
 				console.log('verificando token de refresco');
 
 				// Verificar token de refresco
-				jwt.verify(refreshToken, JWT_SECRET, { algorithms: ['HS256'] }, (error, decoded) => {
+				jwt.verify(refreshToken, JWT_SECRET, { algorithms: ['HS256'] }, async (error, user) => {
 					if (error) {
 						throw error;
 					} else {
 						console.log('token de refresco verificado');
-						const user = {
-							id: (decoded as User).id,
-							email: (decoded as User).email,
-							password: '',
-						};
+
+						console.log('user before generateToken(user as User): ', user);
 
 						// Genera nuevo access_token usando el payload de refreshToken
-						const newAccessToken = generateToken(user);
+						const newAccessToken = await generateToken(user as User);
+
+						console.log('newAccessToken: ', newAccessToken);
 
 						// Envia el nuevo access_token en una cookie
 						res.cookie('access_token', newAccessToken, {
 							httpOnly: true,
-							secure: process.env.NODE_ENV === 'production', // Use Secure in production
+							secure: process.env.NODE_ENV === 'production',
 							sameSite: 'strict',
 						});
 
@@ -69,9 +68,9 @@ const authenticateToken = async (req: Request, res: Response, next: NextFunction
 						next();
 					}
 				});
-			} catch (refreshError) {
-				console.error('Error verificando token de refresco: ', refreshError);
-				res.status(403).json({ error: 'La sesión expiró, por favor vuelve a iniciar sesión...' });
+			} catch (error) {
+				console.error('Error verificando token de refresco: ', error);
+				res.status(403).send('<h1>La sesión expiró, por favor vuelve a iniciar sesión...<h1>');
 				return;
 			}
 		} else {
