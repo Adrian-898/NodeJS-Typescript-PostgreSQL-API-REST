@@ -1,6 +1,6 @@
-interface jwtPayload {
+interface JwtPayload {
 	id: string;
 	email: string;
 }
 
-export { jwtPayload };
+export { JwtPayload };

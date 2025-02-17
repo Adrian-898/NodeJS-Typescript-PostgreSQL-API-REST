@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 import { NextFunction, Response } from 'express';
 import { generateToken } from '../services/auth';
+import { JwtPayload } from '../models/jwt.interface';
 import { User } from '../models/user.interface';
-import { jwtPayload } from '../models/jwt.interface';
 import AuthRequest from '../models/AuthRequest.interface';
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -26,7 +26,7 @@ const authenticateToken = async (req: AuthRequest, res: Response, next: NextFunc
 				throw error;
 			} else {
 				console.log('token de acceso verificado en authenticateToken');
-				req.user = user as User;
+				req.user = user as JwtPayload;
 				next();
 			}
 		});
@@ -68,7 +68,7 @@ const authenticateToken = async (req: AuthRequest, res: Response, next: NextFunc
 						sameSite: 'strict',
 					});
 
-					req.user = user as User;
+					req.user = user as JwtPayload;
 
 					console.log('nuevo access token generado y enviado');
 					next();

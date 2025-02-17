@@ -1,11 +1,8 @@
 import { Request } from 'express';
+import { JwtPayload } from './jwt.interface';
 
 interface AuthRequest extends Request {
-	user?: {
-		id: string;
-		email: string;
-		password?: string;
-	};
+	user?: JwtPayload;
 }
 
 export default AuthRequest;

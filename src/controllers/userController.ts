@@ -1,9 +1,10 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { hashPassword } from '../services/password';
 import prisma from '../models/user';
+import AuthRequest from '../models/AuthRequest.interface';
 
 //get all [GET]
-const getUsers = async (req: Request, res: Response): Promise<void> => {
+const getUsers = async (req: AuthRequest, res: Response): Promise<void> => {
 	try {
 		//busca todos los usuarios
 		const users = await prisma.user.findMany();
@@ -17,7 +18,7 @@ const getUsers = async (req: Request, res: Response): Promise<void> => {
 };
 
 // get unico [GET]
-const getUserById = async (req: Request, res: Response): Promise<void> => {
+const getUserById = async (req: AuthRequest, res: Response): Promise<void> => {
 	const userId = req.params.id;
 
 	try {
@@ -41,7 +42,7 @@ const getUserById = async (req: Request, res: Response): Promise<void> => {
 };
 
 // actualizar un usuario [PUT]
-const updateUser = async (req: Request, res: Response): Promise<void> => {
+const updateUser = async (req: AuthRequest, res: Response): Promise<void> => {
 	const { email, password } = req.body;
 
 	// Validando que se proporciona al menos un campo a editar
@@ -100,7 +101,7 @@ const updateUser = async (req: Request, res: Response): Promise<void> => {
 };
 
 // borrar un usuario [DELETE]
-const deleteUser = async (req: Request, res: Response): Promise<void> => {
+const deleteUser = async (req: AuthRequest, res: Response): Promise<void> => {
 	const userId = req.params.id;
 
 	try {

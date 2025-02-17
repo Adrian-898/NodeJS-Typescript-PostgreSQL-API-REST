@@ -6,7 +6,7 @@ import AuthRequest from '../models/AuthRequest.interface';
 const router = express.Router();
 
 router.get('/', authenticateToken, (req: AuthRequest, res: Response) => {
-	res.render('protected', req.user);
+	res.render('protected', { user: req.user });
 });
 
 router.get('/logout', logout);

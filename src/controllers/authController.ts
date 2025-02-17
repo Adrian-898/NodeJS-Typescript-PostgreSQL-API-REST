@@ -50,7 +50,6 @@ const register = async (req: Request, res: Response): Promise<void> => {
 				httpOnly: true, // solo accesible por el servidor
 				sameSite: 'strict', // solo accesible desde el mismo dominio
 				secure: process.env.NODE_ENV === 'production', // solo usada a traves de https en produccion
-				maxAge: 1000 * 60 * 60, // 1 hora
 			})
 			// se envia en una cookie el token de refresco (sin tiempo de expiracion en la cookie, el tiempo se maneja con el token, dura mas)
 			.cookie('refresh_token', refreshToken, {
