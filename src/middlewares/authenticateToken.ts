@@ -1,13 +1,12 @@
 import jwt from 'jsonwebtoken';
-import { NextFunction, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { generateToken } from '../services/auth';
 import { JwtPayload } from '../models/jwt.interface';
 import { User } from '../models/user.interface';
-import AuthRequest from '../models/AuthRequest.interface';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-const authenticateToken = async (req: AuthRequest, res: Response, next: NextFunction) => {
+const authenticateToken = async (req: Request, res: Response, next: NextFunction) => {
 	if (!JWT_SECRET) {
 		res.status(500).json({ error: 'Error de autenticación' });
 		return;

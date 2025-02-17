@@ -35,4 +35,5 @@ app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 
 console.log('Ejecutando...');
+
 export default app;

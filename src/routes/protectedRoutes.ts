@@ -1,11 +1,10 @@
-import express, { Response } from 'express';
+import express, { Request, Response } from 'express';
 import { logout } from '../controllers/protectedController';
 import authenticateToken from '../middlewares/authenticateToken';
-import AuthRequest from '../models/AuthRequest.interface';
 
 const router = express.Router();
 
-router.get('/', authenticateToken, (req: AuthRequest, res: Response) => {
+router.get('/', authenticateToken, (req: Request, res: Response) => {
 	res.render('protected', { user: req.user });
 });
 
