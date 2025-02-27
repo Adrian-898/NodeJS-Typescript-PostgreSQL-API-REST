@@ -1,5 +1,3 @@
 node_modules
 postgres
 dist
-.env
-.vscode
